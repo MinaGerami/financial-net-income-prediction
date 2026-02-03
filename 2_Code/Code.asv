@@ -1,0 +1,81 @@
+X=xlsread('X.xlsx');	% read Features from X matrix (Main Data)
+Y=xlsread('Y.xlsx');	% read Activity from Y matrix 
+
+
+
+
+[~,~,Xname] = xlsread('X.xlsx');	% read the name of Features from X matrix
+Xname=Xname(1,:);	% select just first row (just names of features)
+
+
+
+
+
+XX=zeros(size(X));	% normalization data between -100 and 100
+a=-100;
+b=100;
+for i=1:size(X,2)
+    XX(:,i)=((( (b-a)*(X(:,i) - min(X(:,i)) ) )) / (max(X(:,i))-min(X(:,i))))+(a);
+end
+
+
+
+XXX=[];	% first method of feature selection
+XXXname=[];
+for j=1:size(XX,2)
+    m=unique(XX(:,j));
+    if(size(m,1)>200)
+        XXX=cat(2,XXX,XX(:,j));
+        XXXname=cat(2,XXXname,Xname(:,j));
+    else
+        fprintf('Removing column %d: %s\n', j, Xname{j});
+    end
+end
+
+
+
+
+R=corrcoef(XXX);	% second method of feature selection
+x1=ones(1,size(R,2));
+for i=1:size(R,2)
+    for j=i:size(R,2)
+        if( i~=j && R(i,j)>0.9 )
+            x1(1,j)=0;
+              fprintf('Removing column %d: %s (highly correlated with column %d: %s, corr = %.2f)\n', ...
+                    j, XXXname{j}, i, XXXname{i}, R(i,j));
+        end
+   end
+end
+
+
+newXname=[];
+newXX=[];
+for j=1:size(x1,2)
+    if(x1(1,j)==1)
+        newXname=cat(2,newXname,XXXname(:,j));
+        newXX=cat(2,newXX,XXX(:,j));
+    end
+end
+
+
+
+
+stepwise(newXX,Y);	% third method of feature selection (stepwise)
+
+%{
+newnewX=newXX(:,[169,128,179,216,91,138,122,243]);
+newnewXname=newXname(:,[169,128,179,216,91,138,122,243]);
+
+
+
+Xlast=[ones(size(newnewX,1),1) newnewX];
+B=(inv(Xlast'*Xlast))*(Xlast'*Y);
+
+
+
+Yhad=Xlast*B;	% validation
+R=(corrcoef(Y,Yhad));
+R2=R(1,2).^2;
+
+%}
+

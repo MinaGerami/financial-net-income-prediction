@@ -84,5 +84,14 @@ Which financial indicators most significantly influence companies’ net income,
 - **Earnings Per Share (EPS):** Profit allocated to each share
 - **Estimated Shares Outstanding:** Approximate number of shares in circulation
 
+## Data Preprocessing:
+Step 1 – Remove Target-Derived Features:
+Financial variables that directly represent or are derived from net income were removed to prevent data leakage and ensure a valid regression model.
+Step 2 – Remove Low-Variability Features:
+Out of 67 features (1,781 instances), columns with fewer than 200 unique values were removed to eliminate low-variability features, leaving only informative features for regression.
+Step 3 – Remove Highly Correlated Features:  
+Out of the remaining features after Step 2, 9 columns with correlation greater than 0.9 were removed to prevent redundancy and ensure model stability.
+Step 4 _ Stepwise feature selection was applied, resulting in a set of independent and informative features for regression modeling.
+
 ## Work in Progress
 The project is currently in progress.
