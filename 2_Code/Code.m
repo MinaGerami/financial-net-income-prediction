@@ -66,7 +66,7 @@ end
 newnewX=newXX(:,[15,43,45,27,12,24,22,17]);
 newnewXname=newXname(:,[15,43,45,27,12,24,22,17]);
 
-
+RnewnewX=corrcoef(newnewX);
 
 Xlast=[ones(size(newnewX,1),1) newnewX];
 B=(inv(Xlast'*Xlast))*(Xlast'*Y);
@@ -77,10 +77,19 @@ R=(corrcoef(Y,Yhad));
 R2=R(1,2).^2;
 
 
+
+%{
 RMSE = sqrt(mean((Y - Yhad).^2));
 NRMSE_range = RMSE / (max(Y) - min(Y));
 NRMSE_mean = RMSE / mean(abs(Y));
 
-%{
+
+SS_res = sum((Y - Yhad).^2);          % Residual sum of squares
+SS_tot = sum((Y - mean(Y)).^2);       % Total sum of squares
+R2 = 1 - (SS_res / SS_tot);
+
+RelativeError = mean(abs(Y - Yhad) ./ (max(Y) - min(Y)));
+
+
 %}
 
