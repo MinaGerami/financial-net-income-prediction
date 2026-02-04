@@ -60,7 +60,7 @@ end
 
 
 
- %stepwise(newXX,Y);	% third method of feature selection (stepwise)
+%stepwise(newXX,Y);	% third method of feature selection (stepwise)
 
 
 newnewX=newXX(:,[15,43,45,27,12,24,22,17]);
@@ -71,11 +71,16 @@ newnewXname=newXname(:,[15,43,45,27,12,24,22,17]);
 Xlast=[ones(size(newnewX,1),1) newnewX];
 B=(inv(Xlast'*Xlast))*(Xlast'*Y);
 
-%{
 
 Yhad=Xlast*B;	% validation
 R=(corrcoef(Y,Yhad));
 R2=R(1,2).^2;
 
+
+RMSE = sqrt(mean((Y - Yhad).^2));
+NRMSE_range = RMSE / (max(Y) - min(Y));
+NRMSE_mean = RMSE / mean(abs(Y));
+
+%{
 %}
 
